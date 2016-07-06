@@ -17,7 +17,6 @@ var minesweeper = (function($) {
     styleContainerSize();
   }
 
-
   function appendGrid() {
     let $container = $('#container');
     let gridSize = boardSize  * boardSize;
@@ -35,8 +34,9 @@ var minesweeper = (function($) {
   function render() {
     appendContainer();
     appendGrid();
+    addBombs();
+    console.log(board)
   }
-
 
   function fillBoard() {
     let board = [];
@@ -51,19 +51,35 @@ var minesweeper = (function($) {
   }
 
 
-  function getRandomNum() {
-    return Math.floor(Math.random() * (boardSize) + 1);
-  }
-
   function getRandomCords() {
-    let x = getRandomNum();
-    let y = getRandomNum();
+    return Math.floor(Math.random() * (boardSize-1) + 1);
   }
 
-  function randomizeBombs() {
-    let numOfBombs = Math.floor((boardSize * boardSize) * 10 / 100) + 1;
-    for (let i = 1; i <= numOfBombs; i++){
+  function getBombCords(){
+    let x, y, emptyPosition;
+    do {
+      x = getRandomCords();
+      y = getRandomCords();
+      emptyPosition = board[x][y];
+    } while (emptyPosition != '')
 
+    return [x,y];
+  }
+
+  function addBomb(){
+    let cords = getBombCords();
+    let [x, y] = cords;
+    board[x][y] = bomb;
+  }
+
+  function calculateNumOfBombs(){
+    return Math.floor((boardSize * boardSize) * 10 / 100) + 1;
+  }
+
+  function addBombs() {
+    let numOfBombs = calculateNumOfBombs();
+    for (let i = 1; i <= numOfBombs; i++){
+      addBomb();
     }
   }
 
