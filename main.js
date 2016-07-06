@@ -2,23 +2,23 @@ var minesweeper = (function($) {
   const boardSize = 9;
   const bomb = '&#9760;';
   const flag = '&#8683;';
+  let board = fillBoard();
 
-  var styleContainerSize = function(){
-    // 20px heigt/width + 5 * 2 border
+  function styleContainerSize(){
     let size = (boardSize * 26);
     $('#container').css( {
               'width' : size,
               'height' : size
     });
-  };
+  }
 
-  var appendContainer = function() {
+  function appendContainer() {
     $('body').append('<div id="container"></div>');
     styleContainerSize();
-  };
+  }
 
 
-  var appendGrid = function() {
+  function appendGrid() {
     let $container = $('#container');
     let gridSize = boardSize  * boardSize;
 
@@ -30,16 +30,47 @@ var minesweeper = (function($) {
       }
     }
 
-  };
+  }
 
-  var render = function() {
+  function render() {
     appendContainer();
     appendGrid();
-  };
+  }
+
+
+  function fillBoard() {
+    let board = [];
+    for (let i = 0; i < boardSize; i++){
+      let row = [];
+        for (let i = 0; i < boardSize; i++ ){
+          row.push("");
+        }
+      board.push(row);
+    }
+    return board;
+  }
+
+
+  function getRandomNum() {
+    return Math.floor(Math.random() * (boardSize) + 1);
+  }
+
+  function getRandomCords() {
+    let x = getRandomNum();
+    let y = getRandomNum();
+  }
+
+  function randomizeBombs() {
+    let numOfBombs = Math.floor((boardSize * boardSize) * 10 / 100) + 1;
+    for (let i = 1; i <= numOfBombs; i++){
+
+    }
+  }
 
   return {
     flag : function() { return flag; },
     bomb : function() { return bomb; },
+    board : function() { return board; },
     render : render
   };
 
@@ -54,7 +85,7 @@ $(document).ready(function(){
     $(this).toggleClass('active');
   });
 
-  $('.grid').html(minesweeper.bomb).text();
+  // $('.grid').html(minesweeper.bomb).text();
 
 });
 
