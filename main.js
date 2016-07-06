@@ -35,6 +35,7 @@ var minesweeper = (function($) {
     appendContainer();
     appendGrid();
     addBombs();
+    addHelperDigits();
   }
 
   function fillBoard() {
@@ -82,21 +83,60 @@ var minesweeper = (function($) {
     }
   }
 
-  function showBombs() {
+  function isWithinAcceptableRange(element){
+    let x, y;
+    [x, y] = element;
+    return x >= 0 && y >= 0 && x <= boardSize - 1 && y <= boardSize - 1;
+  }
+
+  function selectAdjacentPositions(x, y){
+    return [[x-1, y-1], [x-1, y],
+        [x-1, y+1], [x, y+1],
+          [x+1, y+1], [x+1, y],
+            [x+1, y-1], [x, y-1]].filter(isWithinAcceptableRange)
+  }
+
+  function howManyAdjacentBombs(x, y){
+    adjacentPositions = selectAdjacentPositions(x,y);
+
+    let count = 0;
+    adjacentPositions.forEach(function(cords){
+      let x, y;
+      [x, y] = cords;
+      if (board[x][y] == bomb) count++;
+    });
+    return count;
+  }
+
+  function addHelperDigits(){
+    board.forEach(function(row, x){
+      row.forEach(function(value, y){
+        if (value == bomb) {
+          return;
+        } else {
+          let count = howManyAdjacentBombs(x, y);
+          if (count > 0) board[x][y] = count;
+        }
+      });
+    });
+  }
+
+  function showContent() {
     board.forEach(function(row, x){
       row.forEach(function(value, y){
         $('#' + x + '_' + y).html(value).text();
       });
     });
-    console.log(board);
   }
+
+
 
   return {
     flag : function() { return flag; },
     bomb : function() { return bomb; },
     board : function() { return board; },
     render : render,
-    showBombs : showBombs
+    showContent : showContent
   };
 
 
@@ -106,8 +146,9 @@ var minesweeper = (function($) {
 $(document).ready(function(){
   minesweeper.render();
 
-  $('.grid').click(function(){
+  $('.grid').click(function(e){
     $(this).toggleClass('active');
+    console.log(event.target.id);
   });
 
   // $('.grid').html(minesweeper.bomb).text();
