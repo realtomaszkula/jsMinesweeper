@@ -35,7 +35,6 @@ var minesweeper = (function($) {
     appendContainer();
     appendGrid();
     addBombs();
-    console.log(board)
   }
 
   function fillBoard() {
@@ -61,7 +60,7 @@ var minesweeper = (function($) {
       x = getRandomCords();
       y = getRandomCords();
       emptyPosition = board[x][y];
-    } while (emptyPosition != '')
+    } while (emptyPosition !== '');
 
     return [x,y];
   }
@@ -83,11 +82,21 @@ var minesweeper = (function($) {
     }
   }
 
+  function showBombs() {
+    board.forEach(function(row, x){
+      row.forEach(function(value, y){
+        $('#' + x + '_' + y).html(value).text();
+      });
+    });
+    console.log(board);
+  }
+
   return {
     flag : function() { return flag; },
     bomb : function() { return bomb; },
     board : function() { return board; },
-    render : render
+    render : render,
+    showBombs : showBombs
   };
 
 
