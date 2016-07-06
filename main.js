@@ -22,9 +22,12 @@ var minesweeper = (function($) {
     let $container = $('#container');
     let gridSize = boardSize  * boardSize;
 
-    for (var i = 1; i <= gridSize ; i++){
-      let $grid = $('<div class="grid"></div>');
-      $container.append($grid);
+    for (var x = 1; x <= boardSize ; x++){
+      for(var y = 1; y <= boardSize; y++) {
+        let $grid =
+        $('<div class="grid" id="' + x + '_' + y + '"></div>');
+        $container.append($grid);
+      }
     }
 
   };
