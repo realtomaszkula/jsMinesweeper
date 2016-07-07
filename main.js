@@ -125,11 +125,29 @@ var minesweeper = (function($) {
     });
   };
 
+  let addColorClasses = () => {
+     board.forEach( (row, x) => {
+      row.forEach( (value, y) => {
+        let id = '#' + x + '_' + y;
+        let className;
+
+        switch (board[x][y]) {
+          case bomb : className = 'bomb'; break;
+          case ''   : className = ''; break;
+          default   : className = 'number' + board[x][y]; break;
+        }
+
+        $(id).addClass(className);
+      });
+    });
+  };
+
   let render = () => {
     appendContainer();
     appendGrid();
     addBombs();
     addHelperDigits();
+    addColorClasses();
   };
 
 
@@ -160,9 +178,10 @@ var minesweeper = (function($) {
     return findEmptyFieldsTouching(queue.shift(), visited, results, queue);
   };
 
-  let activate = (ids) => {
+  let showEmpty = (ids) => {
     ids.forEach( id => {
       $('#' + id[0] + '_' + id[1]).addClass('active');
+      $('#' + id[0] + '_' + id[1]).html(board[id[0]][id[1]]).text();
     });
   };
 
@@ -170,12 +189,29 @@ var minesweeper = (function($) {
     return [ parseInt(id[0]), parseInt(id[2]) ] ;
   };
 
-  let toggleActive = (id) => {
+  let showEmptyFields = (id) => {
+    let ids = findEmptyFieldsTouching(id, [], [], []);
+    showEmpty(ids);
+  };
+
+  let showThis = (id) => {
+    $('#' + id[0] + '_' + id[1]).addClass('active');
+    $('#' + id[0] + '_' + id[1]).html(board[id[0]][id[1]]).text();
+  };
+
+  let gameOver = () => {
+    alert("Game over!");
+  };
+
+  let evaluateClick = (id) => {
     currentId = convertToInt(id);
-    let a = currentId[0];
-    let b = currentId[1];
-    let ids = findEmptyFieldsTouching(currentId, [], [], []);
-    activate(ids);
+    let x = currentId[0];
+    let y = currentId[1];
+    switch (board[x][y]) {
+      case ""   : showEmptyFields(currentId); break;
+      case bomb : showContent(); gameOver(); break;
+      default   : showThis(currentId); break;
+    }
   };
 
   return {
@@ -185,7 +221,7 @@ var minesweeper = (function($) {
     results     : () => { return results; },
     render      : render,
     showContent : showContent,
-    toggleActive : (id) => toggleActive(id)
+    evaluateClick : (id) => evaluateClick(id)
   };
 
 
@@ -194,14 +230,11 @@ var minesweeper = (function($) {
 
 $(document).ready( () => {
   minesweeper.render();
-  minesweeper.showContent();
-
+  // minesweeper.showContent();
 
   $('.grid').click((e) => {
-    minesweeper.toggleActive(e.target.id);
+    minesweeper.evaluateClick(e.target.id);
   });
-
-  // $('.grid').html(minesweeper.bomb).text();
 
 });
 

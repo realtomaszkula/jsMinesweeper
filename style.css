@@ -14,3 +14,18 @@
 .active {
   border: 3px inset;
 }
+
+.number1 {
+  border-color: black;
+  color: blue;
+}
+
+.number2 {
+  border-color: black;
+  color: green;
+}
+
+.number3 {
+  border-color: black;
+  color: red;
+}
