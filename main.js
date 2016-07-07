@@ -1,5 +1,6 @@
-var minesweeper = (function($) {
-  const boardSize = 9;
+var minesweeper = (($) => {
+  let boardSize;
+  let board;
   const bomb = '&#9760;';
   const flag = '&#8683;';
 
@@ -31,7 +32,7 @@ var minesweeper = (function($) {
   };
 
   let fillBoard = () => {
-    let board = [];
+    var board = [];
     for (let i = 0; i < boardSize; i++){
       let row = [];
         for (let i = 0; i < boardSize; i++ ){
@@ -42,7 +43,6 @@ var minesweeper = (function($) {
     return board;
   };
 
-  let board = fillBoard();
 
   let getRandomCords = () => {
     return Math.floor(Math.random() * (boardSize-1) + 1);
@@ -142,15 +142,6 @@ var minesweeper = (function($) {
     });
   };
 
-  let render = () => {
-    appendContainer();
-    appendGrid();
-    addBombs();
-    addHelperDigits();
-    addColorClasses();
-  };
-
-
   let haveVisitedBefore = (visited, currentId) => {
     return visited.some( id => JSON.stringify(id) === JSON.stringify(currentId) );
   };
@@ -214,13 +205,29 @@ var minesweeper = (function($) {
     }
   };
 
+  let setBoardSize = () => {
+    boardSize = prompt('Enter board size');
+    boardSize = parseInt(boardSize);
+  };
+
+  let render = () => {
+    setBoardSize();
+    board = fillBoard();
+    appendContainer();
+    appendGrid();
+    addBombs();
+    addHelperDigits();
+    addColorClasses();
+  };
+
+
   return {
-    flag        : () => { return flag; },
-    bomb        : () => { return bomb; },
-    board       : () => { return board; },
-    results     : () => { return results; },
+    // flag        : () => { return flag; },
+    // bomb        : () => { return bomb; },
+    // board       : () => { return board; },
+    // results     : () => { return results; },
+    // showContent : showContent,
     render      : render,
-    showContent : showContent,
     evaluateClick : (id) => evaluateClick(id)
   };
 
@@ -228,10 +235,23 @@ var minesweeper = (function($) {
 })(jQuery);
 
 
+var timer = (($) => {
+  let n = 0;
+  let drawTime = () => {
+    $('#timer').text(n + ' s');
+    n++;
+  };
+  let interval = setInterval(drawTime, 1000, n);
+
+  return {
+    drawTime : drawTime
+  };
+})(jQuery);
+
+
 $(document).ready( () => {
   minesweeper.render();
-  // minesweeper.showContent();
-
+  timer.drawTime();
   $('.grid').click((e) => {
     minesweeper.evaluateClick(e.target.id);
   });

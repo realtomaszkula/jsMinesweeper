@@ -2,6 +2,11 @@
   margin: 50px auto;
 }
 
+#timer {
+  margin: 50px;
+  text-align: center;
+}
+
 .grid {
   float: left;
   width: 20px;
