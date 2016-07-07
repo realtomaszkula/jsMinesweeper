@@ -139,6 +139,9 @@ var minesweeper = (function($) {
   };
 
   let findEmptyFieldsTouching = (id) => {
+    let x = parseInt(id[0]);
+    let y = parseInt(id[2]);
+    console.log(selectAdjacentPositions(x,y));
     return [id];
   };
 
@@ -164,6 +167,8 @@ var minesweeper = (function($) {
 
 $(document).ready( () => {
   minesweeper.render();
+  minesweeper.showContent();
+
 
   $('.grid').click((e) => {
     minesweeper.toggleActive(e.target.id);
