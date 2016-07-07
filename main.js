@@ -132,17 +132,37 @@ var minesweeper = (function($) {
     addHelperDigits();
   };
 
-  let findEmptyFieldsTouching = (currentFieldId, results, queue) => {
-    if (queue.length == 0) {
-      return results;
+
+  let haveVisitedBefore = (visited, currentId) => {
+    return visited.some( id => JSON.stringify(id) === JSON.stringify(currentId) );
+  };
+
+  let updateQueue = (currentId, queue) => {
+    let x = currentId[0];
+    let y = currentId[1];
+    if (board[x][y] === '') {
+      selectAdjacentPositions(x,y).forEach(
+        field => queue.push(field)
+      );
     }
-    results.push(currentFieldId);
-    return findEmptyFieldsTouching(queue.shift(), results, queue);
+    return queue;
+  };
+
+  let findEmptyFieldsTouching = (currentId, visited, results , queue) => {
+    if (!haveVisitedBefore(visited, currentId))
+    {
+      queue = updateQueue(currentId, queue);
+      visited.push(currentId);
+      results.push(currentId);
+    }
+
+    if (queue.length === 0) return results;
+    return findEmptyFieldsTouching(queue.shift(), visited, results, queue);
   };
 
   let activate = (ids) => {
     ids.forEach( id => {
-      $('#' + id[0] + '_' + id[2]).addClass('active');
+      $('#' + id[0] + '_' + id[1]).addClass('active');
     });
   };
 
@@ -151,15 +171,12 @@ var minesweeper = (function($) {
   };
 
   let toggleActive = (id) => {
-    currentFieldId = convertToInt(id);
-    let a = currentFieldId[0];
-    let b = currentFieldId[1];
-    ids = findEmptyFieldsTouching(currentFieldId, [], selectAdjacentPositions(a,b));
-
+    currentId = convertToInt(id);
+    let a = currentId[0];
+    let b = currentId[1];
+    let ids = findEmptyFieldsTouching(currentId, [], [], []);
     activate(ids);
   };
-
-
 
   return {
     flag        : () => { return flag; },
