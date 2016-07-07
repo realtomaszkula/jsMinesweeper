@@ -132,6 +132,21 @@ var minesweeper = (function($) {
     addHelperDigits();
   };
 
+  let activate = (ids) => {
+    ids.forEach( id => {
+      $('#' + id[0] + '_' + id[2]).addClass('active');
+    });
+  };
+
+  let findEmptyFieldsTouching = (id) => {
+    return [id];
+  };
+
+  let toggleActive = (id) => {
+    let ids = findEmptyFieldsTouching(id);
+    activate(ids);
+  };
+
 
   return {
     flag        : () => { return flag; },
@@ -140,6 +155,7 @@ var minesweeper = (function($) {
     results     : () => { return results; },
     render      : render,
     showContent : showContent,
+    toggleActive : (id) => toggleActive(id)
   };
 
 
@@ -150,8 +166,7 @@ $(document).ready( () => {
   minesweeper.render();
 
   $('.grid').click((e) => {
-    $(this).toggleClass('active');
-    console.log(event.target.id);
+    minesweeper.toggleActive(e.target.id);
   });
 
   // $('.grid').html(minesweeper.bomb).text();
