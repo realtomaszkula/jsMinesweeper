@@ -132,23 +132,33 @@ var minesweeper = (function($) {
     addHelperDigits();
   };
 
+  let findEmptyFieldsTouching = (currentFieldId, results, queue) => {
+    if (queue.length == 0) {
+      return results;
+    }
+    results.push(currentFieldId);
+    return findEmptyFieldsTouching(queue.shift(), results, queue);
+  };
+
   let activate = (ids) => {
     ids.forEach( id => {
       $('#' + id[0] + '_' + id[2]).addClass('active');
     });
   };
 
-  let findEmptyFieldsTouching = (id) => {
-    let x = parseInt(id[0]);
-    let y = parseInt(id[2]);
-    console.log(selectAdjacentPositions(x,y));
-    return [id];
+  let convertToInt = (id) => {
+    return [ parseInt(id[0]), parseInt(id[2]) ] ;
   };
 
   let toggleActive = (id) => {
-    let ids = findEmptyFieldsTouching(id);
+    currentFieldId = convertToInt(id);
+    let a = currentFieldId[0];
+    let b = currentFieldId[1];
+    ids = findEmptyFieldsTouching(currentFieldId, [], selectAdjacentPositions(a,b));
+
     activate(ids);
   };
+
 
 
   return {
